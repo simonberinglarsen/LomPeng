@@ -14,6 +14,7 @@ namespace LomPeng
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseUrls("http://*:5004")
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
