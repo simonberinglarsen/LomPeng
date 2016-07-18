@@ -1,0 +1,8 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<strong>Jeppe</strong> 100 @Html.ActionLink("mere...", "ManageAccount", "ParentHome", new { id = 1 }, null)<br />
+<strong>Lasse</strong> 200 @Html.ActionLink("mere...", "ManageAccount", "ParentHome", new { id = 2 }, null)<br />
+<strong>Jonas</strong> 300 @Html.ActionLink("mere...", "ManageAccount", "ParentHome", new { id = 3 }, null)<br />
+@Html.ActionLink("NY", "NewAccount", "ParentHome", null, null)<br />

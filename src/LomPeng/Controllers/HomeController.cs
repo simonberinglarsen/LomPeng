@@ -10,6 +10,17 @@ namespace LomPeng.Controllers
     {
         public IActionResult Index()
         {
+            // child role..
+            if(User.Identity.IsAuthenticated)
+            {
+                if(User.Identity.Name.Contains("simon"))
+                    return RedirectToAction("", "ParentHome");
+                return RedirectToAction("", "ChildHome");
+            }
+            else
+            {
+                return RedirectToAction("Register", "Account");
+            }
             return View();
         }
 
