@@ -1,16 +1,34 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<h1><strong>JEPPE</strong> 100</h1>
-<br />
-Beløb: 100<br />
-Beskrivelse: "Gave"<br/>
-<br />
-@Html.ActionLink("Indsæt penge", "NewTransaction", "ParentHome", new { id = 1, Amount = 100, Description="Gave fra farfar" }, null)<br />
-@Html.ActionLink("Hæv penge", "NewTransaction", "ParentHome", new { id = 1, Amount = -100, Description = "BR - lego" }, null)<br />
-<br/>
-<br />
-Seneste poster
+
+<div class="btn-group-vertical well">
+    <button class="btn btn-default"><h1><strong>Jeppe</strong> 100,-</h1></button>
+    <button class="btn btn-danger" onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = 2 })'">slet konto</button>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Ny Transaktion</h4>
+    </div>
+
+    <div class="panel-body">
+        <div class="form-group">
+            <label for="email">Beløb</label>
+            <input type="number" class="form-control" id="email" value="100">
+        </div>
+        <div class="form-group">
+            <label for="pwd">Beskrivelse:</label>
+            <input type="text" class="form-control" id="pwd" value="legetøj">
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="btn btn-primary">Hæv</div>
+        <div class="btn btn-default">Indsæt</div>
+
+    </div>
+</div>
+
 <pre>
 Dato       Beskrivelse     Beløb    Total
 -----------------------------------------

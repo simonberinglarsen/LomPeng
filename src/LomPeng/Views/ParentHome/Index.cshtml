@@ -2,7 +2,20 @@
     ViewData["Title"] = "Home Page";
 }
 
-<strong>Jeppe</strong> 100 @Html.ActionLink("mere...", "ManageAccount", "ParentHome", new { id = 1 }, null)<br />
-<strong>Lasse</strong> 200 @Html.ActionLink("mere...", "ManageAccount", "ParentHome", new { id = 2 }, null)<br />
-<strong>Jonas</strong> 300 @Html.ActionLink("mere...", "ManageAccount", "ParentHome", new { id = 3 }, null)<br />
-@Html.ActionLink("NY", "NewAccount", "ParentHome", null, null)<br />
+
+<div class="btn-group-vertical well">
+    <button class="btn btn-default"  onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = 2 })'"><h1><strong>Jeppe</strong> 100,-</h1></button>
+    <button class="btn btn-primary"  onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = 2 })'">mere</button>
+</div>
+<div class="btn-group-vertical well">
+    <button class="btn btn-default"><h1><strong>Lasse</strong> 149,-</h1></button>
+    <button class="btn btn-primary">mere</button>
+</div>
+<div class="btn-group-vertical well">
+    <button class="btn btn-default"><h1><strong>Jonas</strong> 179,-</h1></button>
+    <button class="btn btn-primary nostyle">mere</button>
+</div>
+<div class="btn-group-vertical well">
+    <button class="btn btn-default"  onclick="location.href='@Url.Action("NewAccount", "ParentHome")'"><h1><strong>+</strong></h1></button>
+    <button class="btn btn-primary nostyle"  onclick="location.href='@Url.Action("NewAccount", "ParentHome")'">...</button>
+</div>
