@@ -48,3 +48,10 @@ textarea {
     display: none
   }
 }
+
+.navbar-brand,
+.navbar-nav li a {
+    line-height: 64px;
+    height: 64px;
+    padding-top: 0;
+}
