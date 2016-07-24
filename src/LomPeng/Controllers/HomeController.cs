@@ -3,25 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using LomPeng.Data;
+using Microsoft.AspNetCore.Http;
+using LomPeng.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace LomPeng.Controllers
 {
     public class HomeController : Controller
     {
+        private ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public HomeController(
+                ApplicationDbContext context,
+                UserManager<ApplicationUser> userManager
+)
+        {
+            _userManager = userManager;
+            _context = context;
+        }
         public IActionResult Index()
         {
             // child role..
-            if(User.Identity.IsAuthenticated)
+            using (_context)
             {
-                if(User.Identity.Name.Contains("simon"))
+                var currentUser = _context.Users.Where(u => u.UserName == User.Identity.Name).SingleOrDefault();
+                if(currentUser == null)
+                    return RedirectToAction("Register", "Account");
+                var isParent = _userManager.IsInRoleAsync(currentUser, "Parent").Result;
+                if (isParent)
+                {
                     return RedirectToAction("", "ParentHome");
-                return RedirectToAction("", "ChildHome");
-            }
-            else
-            {
+                }
+                var isChild = _userManager.IsInRoleAsync(currentUser, "Child").Result;
+                if (isChild)
+                {
+                    return RedirectToAction("", "ChildHome");
+                }
                 return RedirectToAction("Register", "Account");
             }
-            return View();
         }
 
         public IActionResult About()

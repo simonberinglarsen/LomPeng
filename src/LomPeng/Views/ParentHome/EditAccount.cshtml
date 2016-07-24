@@ -1,0 +1,46 @@
+﻿@model EditAccountViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="btn-group-vertical well">
+    <button class="btn btn-default"><h1><strong>@Model.DisplayName</strong> @Model.AccountTotal ,-</h1></button>
+    <button class="btn btn-default" onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = Model.Id })'">Tilbage</button>
+</div>
+
+<form asp-controller="ParentHome" asp-action="EditAccount" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Indstillinger</h4>
+        </div>
+
+        <div class="panel-body">
+            @Html.HiddenFor(o => o.Id)
+            <div class="form-group">
+                <label asp-for="DisplayName" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="DisplayName" class="form-control" />
+                    <span asp-validation-for="DisplayName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button type="submit" class="btn btn-primary" value="Withdraw" name="button">Opdater</button>
+        </div>
+    </div>
+</form>

@@ -1,20 +1,16 @@
-﻿@{
+﻿@model ParentHomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 
-<div class="btn-group-vertical well">
-    <button class="btn btn-default"  onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = 2 })'"><h1><strong>Jeppe</strong> 100,-</h1></button>
-    <button class="btn btn-primary"  onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = 2 })'">mere</button>
-</div>
-<div class="btn-group-vertical well">
-    <button class="btn btn-default"><h1><strong>Lasse</strong> 149,-</h1></button>
-    <button class="btn btn-primary">mere</button>
-</div>
-<div class="btn-group-vertical well">
-    <button class="btn btn-default"><h1><strong>Jonas</strong> 179,-</h1></button>
-    <button class="btn btn-primary nostyle">mere</button>
-</div>
+@foreach (var childAccount in Model.Accounts)
+{
+    <div class="btn-group-vertical well">
+        <button class="btn btn-default" onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = childAccount.Id })'"><h1><strong>@childAccount.Name</strong> @childAccount.AccountTotal,-</h1></button>
+        <button class="btn btn-primary" onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = childAccount.Id })'">mere</button>
+    </div>
+}
 <div class="btn-group-vertical well">
     <button class="btn btn-default"  onclick="location.href='@Url.Action("NewAccount", "ParentHome")'"><h1><strong>+</strong></h1></button>
     <button class="btn btn-primary nostyle"  onclick="location.href='@Url.Action("NewAccount", "ParentHome")'">...</button>

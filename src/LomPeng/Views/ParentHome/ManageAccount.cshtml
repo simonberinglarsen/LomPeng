@@ -1,39 +1,51 @@
-﻿@{
+﻿@model ManageAccountViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="btn-group-vertical well">
-    <button class="btn btn-default"><h1><strong>Jeppe</strong> 100,-</h1></button>
-    <button class="btn btn-danger" onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = 2 })'">slet konto</button>
+    <button class="btn btn-default"><h1><strong>@Model.Name</strong> @Model.AccountTotal ,-</h1></button>
+    <button class="btn btn-danger" onclick="location.href='@Url.Action("DeleteAccount", "ParentHome", new { id = Model.Id })'">Slet konto</button>
+    <button class="btn btn-success" onclick="location.href='@Url.Action("EditAccount", "ParentHome", new { id = Model.Id })'">Skift Navn / Login</button>
 </div>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h4>Ny Transaktion</h4>
-    </div>
+<form asp-controller="ParentHome" asp-action="NewTransaction" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
 
-    <div class="panel-body">
-        <div class="form-group">
-            <label for="email">Beløb</label>
-            <input type="number" class="form-control" id="email" value="100">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Ny Transaktion</h4>
         </div>
-        <div class="form-group">
-            <label for="pwd">Beskrivelse:</label>
-            <input type="text" class="form-control" id="pwd" value="legetøj">
-        </div>
-    </div>
-    <div class="panel-footer">
-        <div class="btn btn-primary">Hæv</div>
-        <div class="btn btn-default">Indsæt</div>
 
+        <div class="panel-body">
+            @Html.HiddenFor(o => o.Id)
+            <div class="form-group">
+                <label asp-for="NewTransactionAmount" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="NewTransactionAmount" class="form-control" />
+                    <span asp-validation-for="NewTransactionAmount" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewTransactionDescription" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="NewTransactionDescription" class="form-control" />
+                    <span asp-validation-for="NewTransactionDescription" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button type="submit" class="btn btn-primary" value="Withdraw" name="button">Hæv</button>
+            <button type="submit" class="btn btn-default" value="Deposit" name="button">Indsæt</button>
+
+        </div>
     </div>
-</div>
+</form>
 
 <pre>
-Dato       Beskrivelse     Beløb    Total
------------------------------------------
-1/4-2016   BR Lego         -250       100
-1/3-2016   BR Lego         -300       350
-1/2-2016   Gave             100       650
-1/1-2016   Konto Oprettet   550       550
+Dato        Beskrivelse      Beløb      Total
+---------------------------------------------
+@foreach (var transaction in Model.Transactions)
+{
+    @string.Format("{0,10}  {1,15}  {2,7}  {3, 7}{4}", transaction.Date.ToString("yyy-MM-dd"), transaction.Description, transaction.Amount, transaction.AccountTotal, Environment.NewLine)
+}
 </pre>
