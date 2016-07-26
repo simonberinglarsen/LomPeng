@@ -3,49 +3,96 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="btn-group-vertical well">
-    <button class="btn btn-default"><h1><strong>@Model.Name</strong> @Model.AccountTotal ,-</h1></button>
-    <button class="btn btn-danger" onclick="location.href='@Url.Action("DeleteAccount", "ParentHome", new { id = Model.Id })'">Slet konto</button>
-    <button class="btn btn-success" onclick="location.href='@Url.Action("EditAccount", "ParentHome", new { id = Model.Id })'">Skift Navn / Login</button>
+<div class="jumbotron">
+    <h1><strong>@Model.Name <span class="label label-danger">@Model.AccountTotal.ToString("F2") kr.</span></strong></h1>
+    <h3><button class="btn btn-default" onclick="location.href='@Url.Action("", "ParentHome", new { id = Model.Id })'"><span class="glyphicon glyphicon-chevron-left"></span> Alle Konti</button> </h3>
+
 </div>
 
-<form asp-controller="ParentHome" asp-action="NewTransaction" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
 
+
+
+
+
+<div class="panel-group" id="accordion">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h4>Ny Transaktion</h4>
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    Ny Transaktion
+                </a>
+            </h4>
         </div>
-
-        <div class="panel-body">
-            @Html.HiddenFor(o => o.Id)
-            <div class="form-group">
-                <label asp-for="NewTransactionAmount" class="col-md-2 control-label"></label>
-                <div class="col-md-10">
-                    <input asp-for="NewTransactionAmount" class="form-control" />
-                    <span asp-validation-for="NewTransactionAmount" class="text-danger"></span>
-                </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <form asp-controller="ParentHome" asp-action="NewTransaction" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    @Html.HiddenFor(o => o.Id)
+                    <div class="form-group">
+                        <label asp-for="NewTransactionAmount" class="col-md-2 control-label">Beløb</label>
+                        <div class="col-md-10">
+                            <input asp-for="NewTransactionAmount" class="form-control" />
+                            <span asp-validation-for="NewTransactionAmount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="NewTransactionDescription" class="col-md-2 control-label">Beskrivelse</label>
+                        <div class="col-md-10">
+                            <input asp-for="NewTransactionDescription" class="form-control" />
+                            <span asp-validation-for="NewTransactionDescription" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" value="Withdraw" name="button">Hæv</button>
+                    <button type="submit" class="btn btn-default" value="Deposit" name="button">Indsæt</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="NewTransactionDescription" class="col-md-2 control-label"></label>
-                <div class="col-md-10">
-                    <input asp-for="NewTransactionDescription" class="form-control" />
-                    <span asp-validation-for="NewTransactionDescription" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <div class="panel-footer">
-            <button type="submit" class="btn btn-primary" value="Withdraw" name="button">Hæv</button>
-            <button type="submit" class="btn btn-default" value="Deposit" name="button">Indsæt</button>
-
         </div>
     </div>
-</form>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                    Rediger Konto
+                </a>
+            </h4>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse">
+            <div class="panel-body">
+                <p><button class="btn btn-danger" onclick="location.href='@Url.Action("DeleteAccount", "ParentHome", new { id = Model.Id })'">Slet konto</button></p>
+                <p><button class="btn btn-success" onclick="location.href='@Url.Action("EditAccount", "ParentHome", new { id = Model.Id })'">Mere...</button></p>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                    Kontoudskrift
+                </a>
+            </h4>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+            <div class="panel-body">
 
-<pre>
-Dato        Beskrivelse      Beløb      Total
----------------------------------------------
-@foreach (var transaction in Model.Transactions)
-{
-    @string.Format("{0,10}  {1,15}  {2,7}  {3, 7}{4}", transaction.Date.ToString("yyy-MM-dd"), transaction.Description, transaction.Amount, transaction.AccountTotal, Environment.NewLine)
-}
-</pre>
+                <div class="list-group">
+                    @foreach (var transaction in Model.Transactions)
+                    {
+                        <div class="list-group-item">
+                            <div class="list-group-item-text"><strong>@transaction.Description</strong> <span class="label @((transaction.Amount<0)?"label-danger":"label-success") pull-right">@transaction.Amount.ToString("F2")</span></div>
+                            <div class="list-group-item-text">
+                                @transaction.Date.ToString("yyy-MM-dd")
+                                <div class="pull-right">
+                                    <span>saldo: </span>
+                                    <span class="label label-default" style="width: 200px">@transaction.AccountTotal.ToString("F2")</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

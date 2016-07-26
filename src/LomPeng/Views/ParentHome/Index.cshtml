@@ -3,15 +3,17 @@
     ViewData["Title"] = "Home Page";
 }
 
+<div class="list-group">
+    @foreach (var childAccount in Model.Accounts)
+    {
+        <a href="@Url.Action("ManageAccount", "ParentHome", new { id = childAccount.Id })" class="list-group-item">
+            <h2><strong>@childAccount.Name</strong> <span class="label label-danger">@childAccount.AccountTotal.ToString("F2") kr.</span></h2>
+            <span class="list-group-item-text">Klik for at redigere denne konto (nyt kontonavn, slet konto, mm.)</span>
+        </a>
 
-@foreach (var childAccount in Model.Accounts)
-{
-    <div class="btn-group-vertical well">
-        <button class="btn btn-default" onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = childAccount.Id })'"><h1><strong>@childAccount.Name</strong> @childAccount.AccountTotal,-</h1></button>
-        <button class="btn btn-primary" onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = childAccount.Id })'">mere</button>
-    </div>
-}
-<div class="btn-group-vertical well">
-    <button class="btn btn-default"  onclick="location.href='@Url.Action("NewAccount", "ParentHome")'"><h1><strong>+</strong></h1></button>
-    <button class="btn btn-primary nostyle"  onclick="location.href='@Url.Action("NewAccount", "ParentHome")'">...</button>
+    }
+    <a href="@Url.Action("NewAccount", "ParentHome")" class="list-group-item active">
+        <h2>Ny konto</h2>
+        <p class="list-group-item-text">Opret konto. Tilpas kontoen bagefter.</p>
+    </a>
 </div>

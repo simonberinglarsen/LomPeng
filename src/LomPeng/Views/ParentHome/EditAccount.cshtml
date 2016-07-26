@@ -3,44 +3,92 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="btn-group-vertical well">
-    <button class="btn btn-default"><h1><strong>@Model.DisplayName</strong> @Model.AccountTotal ,-</h1></button>
-    <button class="btn btn-default" onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = Model.Id })'">Tilbage</button>
+<div class="jumbotron">
+    <h1><strong>Rediger</strong></h1>
+    <h3><button class="btn btn-default" onclick="location.href='@Url.Action("ManageAccount", "ParentHome", new { id = Model.Id })'"><span class="glyphicon glyphicon-chevron-left"></span> @Model.OldDisplayName</button> </h3>
+
 </div>
 
-<form asp-controller="ParentHome" asp-action="EditAccount" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
-
+<div class="panel-group" id="accordion">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h4>Indstillinger</h4>
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    Indstillinger
+                </a>
+            </h4>
         </div>
-
-        <div class="panel-body">
-            @Html.HiddenFor(o => o.Id)
-            <div class="form-group">
-                <label asp-for="DisplayName" class="col-md-2 control-label"></label>
-                <div class="col-md-10">
-                    <input asp-for="DisplayName" class="form-control" />
-                    <span asp-validation-for="DisplayName" class="text-danger"></span>
-                </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <form asp-controller="ParentHome" asp-action="EditAccount" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    @Html.HiddenFor(o => o.Id)
+                    <div class="form-group">
+                        <label asp-for="NewDisplayName" class="col-md-2 control-label">Navn</label>
+                        <div class="col-md-10">
+                            <input asp-for="NewDisplayName" class="form-control" placeholder="<@Model.OldDisplayName>" />
+                            <span asp-validation-for="NewDisplayName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="NewUserName" class="col-md-2 control-label">Login</label>
+                        <div class="col-md-10">
+                            <input asp-for="NewUserName" class="form-control" placeholder="<@Model.OldUserName>" />
+                            <span asp-validation-for="NewUserName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="col-md-2 control-label">Password</label>
+                        <div class="col-md-10">
+                            <input asp-for="Password" class="form-control" placeholder="<uændret>" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="button">Opdater</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="UserName" class="col-md-2 control-label"></label>
-                <div class="col-md-10">
-                    <input asp-for="UserName" class="form-control" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="col-md-2 control-label"></label>
-                <div class="col-md-10">
-                    <input asp-for="Password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <div class="panel-footer">
-            <button type="submit" class="btn btn-primary" value="Withdraw" name="button">Opdater</button>
         </div>
     </div>
-</form>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                    Administratorer
+                </a>
+            </h4>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse">
+
+            <div class="panel-body">
+                <form asp-controller="ParentHome" asp-action="AddAdministrator" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    @Html.HiddenFor(o => o.Id)
+                    @foreach (var admin in Model.Administrators)
+                    {
+                        var disabled = (Model.CurrentUser.ToUpper() == admin.ToUpper());
+                        <div class="form-group row">
+                            <div class="col-md-2">
+                                <label class="control-label">@admin</label>
+                            </div>
+                            <div class="col-md-2">
+                                @if (disabled)
+                                {
+                                    <div class="btn btn-danger disabled" >Fjern</div>
+                                } else { 
+                                    <div class="btn btn-danger" onclick="location.href='@Url.Action("RemoveAdministrator", "ParentHome", new { id = Model.Id, adminUserName = admin })'">Fjern</div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group row">
+                        <div class="col-md-2">
+                            <input asp-for="NewAdminUserName" class="form-control" placeholder="<email/username>" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-success" name="button">Tilføj</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div> 

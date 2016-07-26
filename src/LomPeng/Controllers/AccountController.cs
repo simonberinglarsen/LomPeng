@@ -47,6 +47,14 @@ namespace LomPeng.Controllers
             return View();
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult AccessDenied(string returnUrl = null)
+        {
+            // consider to implement an access denied page..
+            return RedirectToAction("", "Home");
+        }
+
         //
         // POST: /Account/Login
         [HttpPost]

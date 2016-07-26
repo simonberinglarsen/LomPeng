@@ -11,58 +11,56 @@ using LomPeng.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using LomPeng.Models.ChildHomeViewModels;
+using LomPeng.Services;
 
 namespace LomPeng.Controllers
 {
+    [Authorize(Roles = "Child")]
     public class ChildHomeController : Controller
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
+        private readonly IPermissionService _permissionService;
         private readonly UserManager<ApplicationUser> _userManager;
-        private string _userId;
 
         public ChildHomeController(
                 ApplicationDbContext context,
-                IHttpContextAccessor httpContextAccessor,
-                UserManager<ApplicationUser> userManager
-)
+                IPermissionService permissionService,
+                UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
+            _permissionService = permissionService;
             _context = context;
-            _userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         public IActionResult Index()
         {
-            using (_context)
+            var childAccount = _context.ChildAccounts
+                .Include(c => c.Child)
+                .Include(c => c.Transcations).Single(acc => acc.Child.UserName == User.Identity.Name);
+            ChildHomeViewModel vm = new ChildHomeViewModel()
             {
-                var childAccount = _context.ChildAccounts
-                    .Include(c => c.Child)
-                    .Include(c => c.Transcations)
-                    .Where(acc => acc.Child.Id == _userId).Single();
-                ChildHomeViewModel vm = new ChildHomeViewModel()
+                Name = childAccount.Child.DisplayName,
+                AccountTotal = childAccount.Transcations.Sum(t => t.Amount),
+                Transactions = new List<TransactionViewModel>()
+            };
+            double accountTotal = 0;
+            foreach (var transaction in childAccount.Transcations.OrderBy(o => o.TimeStamp))
+            {
+                accountTotal += transaction.Amount;
+                vm.Transactions.Insert(0, new TransactionViewModel
                 {
-                    Name = childAccount.Child.DisplayName,
-                    AccountTotal = childAccount.Transcations.Sum(t => t.Amount),
-                    Transactions = new List<TransactionViewModel>()
-                };
-                double accountTotal = 0;
-                foreach (var transaction in childAccount.Transcations.OrderBy(o => o.TimeStamp))
-                {
-                    accountTotal += transaction.Amount;
-                    vm.Transactions.Insert(0, new TransactionViewModel
-                    {
-                        Amount = transaction.Amount,
-                        Date = transaction.TimeStamp,
-                        Description = transaction.Description,
-                        AccountTotal = accountTotal,
-                    });
+                    Amount = transaction.Amount,
+                    Date = transaction.TimeStamp,
+                    Description = transaction.Description,
+                    AccountTotal = accountTotal,
+                });
 
-                }
-
-                return View(vm);
             }
+
+            return View(vm);
+
         }
-        
+
 
     }
 }

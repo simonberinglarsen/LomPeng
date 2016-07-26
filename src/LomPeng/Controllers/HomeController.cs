@@ -27,8 +27,6 @@ namespace LomPeng.Controllers
         public IActionResult Index()
         {
             // child role..
-            using (_context)
-            {
                 var currentUser = _context.Users.Where(u => u.UserName == User.Identity.Name).SingleOrDefault();
                 if(currentUser == null)
                     return RedirectToAction("Register", "Account");
@@ -43,7 +41,6 @@ namespace LomPeng.Controllers
                     return RedirectToAction("", "ChildHome");
                 }
                 return RedirectToAction("Register", "Account");
-            }
         }
 
         public IActionResult About()
