@@ -39,6 +39,5 @@ namespace LomPeng.Models
         public DateTime AutoTransferFirstPayment { get; set; }
         public double AutoTransferAmount { get; set; }
         public DateTime LastUpdate { get; set; }
-        public bool Enabled { get; set; }
     }
 }

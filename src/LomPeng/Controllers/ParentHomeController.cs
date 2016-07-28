@@ -136,9 +136,12 @@ namespace LomPeng.Controllers
             var childAccount = new ChildAccount()
             {
                 Child = childUser,
-                AutoTransfer = new AutoTransferSettings() { Enabled = false },
+                AutoTransfer = new AutoTransferSettings() { AutoTransferIntervalInHours = 0 },
                 Transcations = null
             };
+
+            _context.AutoTransferSettings.Add(childAccount.AutoTransfer);
+            _context.SaveChanges();
             _context.ChildAccounts.Add(childAccount);
 
             // create admins for child account
@@ -163,6 +166,7 @@ namespace LomPeng.Controllers
             var childAccount = _context.ChildAccounts
                 .Include(c => c.Child)
                 .Include(c => c.ChildAccountAdministrators).ThenInclude(adm => adm.ApplicationUser)
+                .Include(c => c.AutoTransfer)
                 .Where(acc => acc.Id == id)
                 .Select(acc => new { Account = acc, TotalAmount = acc.Transcations.Sum(t => t.Amount) })
                 .Single();
@@ -176,7 +180,11 @@ namespace LomPeng.Controllers
                 Password = "",
                 AccountTotal = childAccount.TotalAmount,
                 CurrentUser = User.Identity.Name,
-                Administrators = childAccount.Account.ChildAccountAdministrators.Select(adm => adm.ApplicationUser.UserName).ToList()
+                Administrators = childAccount.Account.ChildAccountAdministrators.Select(adm => adm.ApplicationUser.UserName).ToList(),
+
+                AutoTransferAmount = childAccount.Account.AutoTransfer.AutoTransferAmount,
+                AutoTransferFirstPayment = childAccount.Account.AutoTransfer.AutoTransferFirstPayment,
+                AutoTransferIntervalInHours = childAccount.Account.AutoTransfer.AutoTransferIntervalInHours
             };
             return View(vm);
         }
@@ -294,14 +302,14 @@ namespace LomPeng.Controllers
         {
             if (!_permissionService.UserIsAccountAdmin(User, vm.Id))
                 return RedirectToAction("");
-            
+
             var autoTransferSettings = _context.ChildAccounts
-                .Include(x => x.Child)
-                .Include(x => x.AutoTransfer).Select(x => x.AutoTransfer).Single(acc => acc.Id == vm.Id);
+                .Include(x => x.AutoTransfer)
+                .Where(x => x.Id == vm.Id)
+                .Select(x => x.AutoTransfer).Single();
             autoTransferSettings.AutoTransferAmount = vm.AutoTransferAmount;
             autoTransferSettings.AutoTransferFirstPayment = vm.AutoTransferFirstPayment;
             autoTransferSettings.AutoTransferIntervalInHours = vm.AutoTransferIntervalInHours;
-            autoTransferSettings.Enabled = true;
             autoTransferSettings.LastUpdate = DateTime.MinValue;
             _context.SaveChanges();
 

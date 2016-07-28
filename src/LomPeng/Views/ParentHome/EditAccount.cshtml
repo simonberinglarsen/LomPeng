@@ -104,8 +104,9 @@
                 <form asp-controller="ParentHome" asp-action="UpdateAutoTransferSettings" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
                     @Html.HiddenFor(o => o.Id)
                   
+
                     <div class="form-group">
-                        <label asp-for="AutoTransferIntervalInHours" class="col-md-2 control-label">Interval i timer (24 = døgn, 168 = uge, 672 = 4 uger)</label>
+                        <label asp-for="AutoTransferIntervalInHours" class="col-md-2 control-label">Interval i timer (0 = inaktiv, 24 = døgn, 168 = uge, 672 = 4 uger)</label>
                         <div class="col-md-10">
                             <input asp-for="AutoTransferIntervalInHours" class="form-control" placeholder="168" />
                             <span asp-validation-for="AutoTransferIntervalInHours" class="text-danger"></span>
@@ -125,6 +126,7 @@
                             <span asp-validation-for="AutoTransferAmount" class="text-danger"></span>
                         </div>
                     </div>
+                   
                     <button type="submit" class="btn btn-primary" name="button">Opdater</button>
 
                 </form>

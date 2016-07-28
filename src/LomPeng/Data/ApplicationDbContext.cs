@@ -28,6 +28,7 @@ namespace LomPeng.Data
         public DbSet<ChildAccount> ChildAccounts { get; set; }
         public DbSet<ChildAccountAdministrator> ChildAccountAdministrators { get; set; }
         public DbSet<UnknownUser> UnknownUsers { get; set; }
+        public DbSet<AutoTransferSettings> AutoTransferSettings { get; set; }
 
     }
 

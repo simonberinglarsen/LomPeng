@@ -50,21 +50,6 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-                    Rediger Konto
-                </a>
-            </h4>
-        </div>
-        <div id="collapse2" class="panel-collapse collapse">
-            <div class="panel-body">
-                <p><button class="btn btn-danger" onclick="location.href='@Url.Action("DeleteAccount", "ParentHome", new { id = Model.Id })'">Slet konto</button></p>
-                <p><button class="btn btn-success" onclick="location.href='@Url.Action("EditAccount", "ParentHome", new { id = Model.Id })'">Mere...</button></p>
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
                     Kontoudskrift
                 </a>
@@ -92,6 +77,22 @@
             </div>
         </div>
     </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                    Rediger Konto
+                </a>
+            </h4>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse">
+            <div class="panel-body">
+                <p><button class="btn btn-danger" onclick="location.href='@Url.Action("DeleteAccount", "ParentHome", new { id = Model.Id })'">Slet konto</button></p>
+                <p><button class="btn btn-success" onclick="location.href='@Url.Action("EditAccount", "ParentHome", new { id = Model.Id })'">Mere...</button></p>
+            </div>
+        </div>
+    </div>
+    
 </div>
 
 
