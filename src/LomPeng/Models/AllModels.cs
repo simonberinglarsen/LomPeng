@@ -11,6 +11,7 @@ namespace LomPeng.Models
         public ICollection<ChildAccountAdministrator> ChildAccountAdministrators { get; set; }
         public ApplicationUser Child { get; set; }
         public ICollection<Transcation> Transcations { get; set; }
+        public AutoTransferSettings AutoTransfer { get; set; }
     }
     public class Transcation
     {
@@ -30,5 +31,14 @@ namespace LomPeng.Models
     public class UnknownUser
     {
         public int Id { get; set; }
+    }
+    public class AutoTransferSettings
+    {
+        public int Id { get; set; }
+        public int AutoTransferIntervalInHours { get; set; }
+        public DateTime AutoTransferFirstPayment { get; set; }
+        public double AutoTransferAmount { get; set; }
+        public DateTime LastUpdate { get; set; }
+        public bool Enabled { get; set; }
     }
 }

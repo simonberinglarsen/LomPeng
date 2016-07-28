@@ -12,7 +12,6 @@ using LomPeng.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace LomPeng.Controllers
 {
     [Authorize(Roles = "Parent")]
@@ -137,6 +136,7 @@ namespace LomPeng.Controllers
             var childAccount = new ChildAccount()
             {
                 Child = childUser,
+                AutoTransfer = new AutoTransferSettings() { Enabled = false },
                 Transcations = null
             };
             _context.ChildAccounts.Add(childAccount);
@@ -289,8 +289,23 @@ namespace LomPeng.Controllers
             return RedirectToAction("");
         }
 
+        [HttpPost]
+        public IActionResult UpdateAutoTransferSettings(EditAccountViewModel vm)
+        {
+            if (!_permissionService.UserIsAccountAdmin(User, vm.Id))
+                return RedirectToAction("");
+            
+            var autoTransferSettings = _context.ChildAccounts
+                .Include(x => x.Child)
+                .Include(x => x.AutoTransfer).Select(x => x.AutoTransfer).Single(acc => acc.Id == vm.Id);
+            autoTransferSettings.AutoTransferAmount = vm.AutoTransferAmount;
+            autoTransferSettings.AutoTransferFirstPayment = vm.AutoTransferFirstPayment;
+            autoTransferSettings.AutoTransferIntervalInHours = vm.AutoTransferIntervalInHours;
+            autoTransferSettings.Enabled = true;
+            autoTransferSettings.LastUpdate = DateTime.MinValue;
+            _context.SaveChanges();
+
+            return RedirectToAction("EditAccount", "ParentHome", new { Id = vm.Id });
+        }
     }
-
-
-
 }

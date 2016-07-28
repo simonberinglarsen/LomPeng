@@ -90,5 +90,46 @@
             </div>
         </div>
     </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                    Auto-overførsel
+                </a>
+            </h4>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+
+            <div class="panel-body">
+                <form asp-controller="ParentHome" asp-action="UpdateAutoTransferSettings" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    @Html.HiddenFor(o => o.Id)
+                  
+                    <div class="form-group">
+                        <label asp-for="AutoTransferIntervalInHours" class="col-md-2 control-label">Interval i timer (24 = døgn, 168 = uge, 672 = 4 uger)</label>
+                        <div class="col-md-10">
+                            <input asp-for="AutoTransferIntervalInHours" class="form-control" placeholder="168" />
+                            <span asp-validation-for="AutoTransferIntervalInHours" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AutoTransferFirstPayment" class="col-md-2 control-label">Første overførsel (dato+tid)</label>
+                        <div class="col-md-10">
+                            <input asp-for="AutoTransferFirstPayment" class="form-control" placeholder="" />
+                            <span asp-validation-for="AutoTransferFirstPayment" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AutoTransferAmount" class="col-md-2 control-label">Beløb</label>
+                        <div class="col-md-10">
+                            <input asp-for="AutoTransferAmount" class="form-control" placeholder="<uændret>" />
+                            <span asp-validation-for="AutoTransferAmount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="button">Opdater</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
 
 </div> 

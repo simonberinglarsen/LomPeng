@@ -14,6 +14,7 @@ using LomPeng.Models;
 using LomPeng.Services;
 using Microsoft.AspNetCore.Identity;
 
+
 namespace LomPeng
 {
     public class Startup
@@ -87,8 +88,7 @@ namespace LomPeng
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
-            SampleData.Initialize(app.ApplicationServices);
-
+            DatabaseSeeder.Initialize(app.ApplicationServices);
 
             app.UseMvc(routes =>
             {
@@ -96,6 +96,7 @@ namespace LomPeng
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }

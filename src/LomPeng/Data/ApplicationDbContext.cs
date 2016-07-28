@@ -31,7 +31,7 @@ namespace LomPeng.Data
 
     }
 
-    public class SampleData
+    public class DatabaseSeeder
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
