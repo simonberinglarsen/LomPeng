@@ -18,9 +18,10 @@ namespace LomPeng.Models.ParentHomeViewModels
         public string NewAdminUserName { get; set; }
         public List<string> Administrators { get; set; }
         public string CurrentUser { get; set; }
-        public int AutoTransferIntervalInHours { get; set; }
+        public double AutoTransferIntervalInHours { get; set; }
         public DateTime AutoTransferFirstPayment { get; set; }
         public double AutoTransferAmount { get; set; }
+        public string AutoTransferDescription { get; set; }
     }
 
 }

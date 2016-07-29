@@ -8,8 +8,8 @@ using LomPeng.Data;
 namespace LomPeng.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160724223419_Init")]
-    partial class Init
+    [Migration("20160729123728_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -67,14 +67,38 @@ namespace LomPeng.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("LomPeng.Models.AutoTransferSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("AutoTransferAmount");
+
+                    b.Property<string>("AutoTransferDescription");
+
+                    b.Property<DateTime>("AutoTransferFirstPayment");
+
+                    b.Property<int>("AutoTransferIntervalInMinutes");
+
+                    b.Property<DateTime?>("LastUpdate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AutoTransferSettings");
+                });
+
             modelBuilder.Entity("LomPeng.Models.ChildAccount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("AutoTransferId");
+
                     b.Property<string>("ChildId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AutoTransferId");
 
                     b.HasIndex("ChildId");
 
@@ -238,6 +262,10 @@ namespace LomPeng.Migrations
 
             modelBuilder.Entity("LomPeng.Models.ChildAccount", b =>
                 {
+                    b.HasOne("LomPeng.Models.AutoTransferSettings", "AutoTransfer")
+                        .WithMany()
+                        .HasForeignKey("AutoTransferId");
+
                     b.HasOne("LomPeng.Models.ApplicationUser", "Child")
                         .WithMany()
                         .HasForeignKey("ChildId");

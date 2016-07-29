@@ -136,7 +136,7 @@ namespace LomPeng.Controllers
             var childAccount = new ChildAccount()
             {
                 Child = childUser,
-                AutoTransfer = new AutoTransferSettings() { AutoTransferIntervalInHours = 0 },
+                AutoTransfer = new AutoTransferSettings() { AutoTransferIntervalInMinutes = 0, LastUpdate = null },
                 Transcations = null
             };
 
@@ -184,7 +184,8 @@ namespace LomPeng.Controllers
 
                 AutoTransferAmount = childAccount.Account.AutoTransfer.AutoTransferAmount,
                 AutoTransferFirstPayment = childAccount.Account.AutoTransfer.AutoTransferFirstPayment,
-                AutoTransferIntervalInHours = childAccount.Account.AutoTransfer.AutoTransferIntervalInHours
+                AutoTransferIntervalInHours = childAccount.Account.AutoTransfer.AutoTransferIntervalInMinutes / 60.0,
+                AutoTransferDescription = childAccount.Account.AutoTransfer.AutoTransferDescription,
             };
             return View(vm);
         }
@@ -309,7 +310,8 @@ namespace LomPeng.Controllers
                 .Select(x => x.AutoTransfer).Single();
             autoTransferSettings.AutoTransferAmount = vm.AutoTransferAmount;
             autoTransferSettings.AutoTransferFirstPayment = vm.AutoTransferFirstPayment;
-            autoTransferSettings.AutoTransferIntervalInHours = vm.AutoTransferIntervalInHours;
+            autoTransferSettings.AutoTransferIntervalInMinutes = (int)(vm.AutoTransferIntervalInHours * 60.0);
+            autoTransferSettings.AutoTransferDescription = vm.AutoTransferDescription;
             autoTransferSettings.LastUpdate = DateTime.MinValue;
             _context.SaveChanges();
 

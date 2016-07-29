@@ -35,9 +35,10 @@ namespace LomPeng.Models
     public class AutoTransferSettings
     {
         public int Id { get; set; }
-        public int AutoTransferIntervalInHours { get; set; }
+        public int AutoTransferIntervalInMinutes { get; set; }
         public DateTime AutoTransferFirstPayment { get; set; }
         public double AutoTransferAmount { get; set; }
-        public DateTime LastUpdate { get; set; }
+        public DateTime? LastUpdate { get; set; }
+        public string AutoTransferDescription { get; set; }
     }
 }

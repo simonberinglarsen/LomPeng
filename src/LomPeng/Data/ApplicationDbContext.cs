@@ -10,7 +10,7 @@ namespace LomPeng.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-       
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -36,29 +36,22 @@ namespace LomPeng.Data
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
-            try
-            {
-                var context = serviceProvider.GetService<ApplicationDbContext>();
-                context.Database.Migrate();
-                string[] roles = new string[] { "Parent", "Child" };
+            var context = serviceProvider.GetService<ApplicationDbContext>();
+            context.Database.Migrate();
+            string[] roles = new string[] { "Parent", "Child" };
 
-                foreach (string role in roles)
+            foreach (string role in roles)
+            {
+                var roleStore = new RoleStore<IdentityRole>(context);
+
+                if (!context.Roles.Any(r => r.Name == role))
                 {
-                    var roleStore = new RoleStore<IdentityRole>(context);
-
-                    if (!context.Roles.Any(r => r.Name == role))
-                    {
-                        var result = roleStore.CreateAsync(new IdentityRole() { Name = role, NormalizedName = role.ToUpper() }).Result;
-                    }
+                    var result = roleStore.CreateAsync(new IdentityRole() { Name = role, NormalizedName = role.ToUpper() }).Result;
                 }
-                context.SaveChanges();
             }
-            catch(Exception ex)
-            {
-
-            }
+            context.SaveChanges();
         }
-        
+
 
     }
 }

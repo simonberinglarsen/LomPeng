@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LomPeng.Data;
 using LomPeng.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace LomPeng.Controllers
 {
@@ -22,10 +21,47 @@ namespace LomPeng.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public JsonResult Run()
         {
             // Insert auto-transfer logic here
-            return RedirectToAction("", "Home");
+            // implement lock(monitor)-mechanism here somehow
+            DateTime updateTime = DateTime.Now;
+            var childAccounts = _context.ChildAccounts.Include(x => x.AutoTransfer).ToList();
+            foreach (var childAccount in childAccounts)
+            {
+                var autoTransfer = childAccount.AutoTransfer;
+                if (autoTransfer == null)
+                    continue;
+                if (autoTransfer.AutoTransferAmount > 0 && autoTransfer.AutoTransferIntervalInMinutes > 0)
+                {
+                    // transfer money
+                    TimeSpan interval = new TimeSpan(0, autoTransfer.AutoTransferIntervalInMinutes, 0);
+                    DateTime nextUpdate;
+                    bool neverUpdated = autoTransfer.LastUpdate == null || (autoTransfer.LastUpdate.HasValue && autoTransfer.LastUpdate.Value == DateTime.MinValue);
+                    if (neverUpdated)
+                        nextUpdate = autoTransfer.AutoTransferFirstPayment;
+                    else
+                        nextUpdate = autoTransfer.LastUpdate.Value + interval;
+                    
+                    int maxIterations = 100;
+                    while (nextUpdate < updateTime && ((maxIterations--) > 0))
+                    {
+                        var newTransaction = new Transcation()
+                        {
+                            Amount = autoTransfer.AutoTransferAmount,
+                            Description = autoTransfer.AutoTransferDescription,
+                            FromAccount = childAccount,
+                            TimeStamp = nextUpdate
+                        };
+                        _context.Transactions.Add(newTransaction);
+                        autoTransfer.LastUpdate = nextUpdate;
+                        nextUpdate += interval;
+                    }
+                }
+                
+            }
+            _context.SaveChanges();
+            return Json(new { Done = true });
         }
     }
 }

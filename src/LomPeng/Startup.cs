@@ -13,7 +13,8 @@ using LomPeng.Data;
 using LomPeng.Models;
 using LomPeng.Services;
 using Microsoft.AspNetCore.Identity;
-
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace LomPeng
 {
@@ -58,7 +59,22 @@ namespace LomPeng
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(options =>
+                {
+                    // handle loops correctly
+                    options.SerializerSettings.ReferenceLoopHandling =
+                        Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
+                    // use standard name conversion of properties
+                    options.SerializerSettings.ContractResolver =
+                        new CamelCasePropertyNamesContractResolver();
+
+                    // include $id property in the output
+                    options.SerializerSettings.PreserveReferencesHandling =
+                        PreserveReferencesHandling.Objects;
+                });
+
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();

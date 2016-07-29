@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LomPeng.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,6 +32,23 @@ namespace LomPeng.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AutoTransferSettings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGeneratedOnAdd", true),
+                    AutoTransferAmount = table.Column<double>(nullable: false),
+                    AutoTransferDescription = table.Column<string>(nullable: true),
+                    AutoTransferFirstPayment = table.Column<DateTime>(nullable: false),
+                    AutoTransferIntervalInMinutes = table.Column<int>(nullable: false),
+                    LastUpdate = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AutoTransferSettings", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,25 +92,6 @@ namespace LomPeng.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ChildAccounts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGeneratedOnAdd", true),
-                    ChildId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChildAccounts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ChildAccounts_AspNetUsers_ChildId",
-                        column: x => x.ChildId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -132,6 +130,32 @@ namespace LomPeng.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChildAccounts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGeneratedOnAdd", true),
+                    AutoTransferId = table.Column<int>(nullable: true),
+                    ChildId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChildAccounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChildAccounts_AutoTransferSettings_AutoTransferId",
+                        column: x => x.AutoTransferId,
+                        principalTable: "AutoTransferSettings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ChildAccounts_AspNetUsers_ChildId",
+                        column: x => x.ChildId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -239,6 +263,11 @@ namespace LomPeng.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChildAccounts_AutoTransferId",
+                table: "ChildAccounts",
+                column: "AutoTransferId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ChildAccounts_ChildId",
                 table: "ChildAccounts",
                 column: "ChildId");
@@ -320,6 +349,9 @@ namespace LomPeng.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AutoTransferSettings");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -73,13 +73,13 @@ namespace LomPeng.Migrations
 
                     b.Property<double>("AutoTransferAmount");
 
+                    b.Property<string>("AutoTransferDescription");
+
                     b.Property<DateTime>("AutoTransferFirstPayment");
 
-                    b.Property<int>("AutoTransferIntervalInHours");
+                    b.Property<int>("AutoTransferIntervalInMinutes");
 
-                    b.Property<bool>("Enabled");
-
-                    b.Property<DateTime>("LastUpdate");
+                    b.Property<DateTime?>("LastUpdate");
 
                     b.HasKey("Id");
 
