@@ -1,5 +1,5 @@
 
-*/1 * * * * /bin/sh /data/ping.sh
+*/30 * * * * /bin/sh /data/ping.sh
 
 
 
