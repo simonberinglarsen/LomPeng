@@ -60,6 +60,13 @@ namespace LomPeng.Controllers
         {
             if (!_permissionService.UserIsAccountAdmin(User, id))
                 return RedirectToAction("");
+            var vm = LoadManageAccountViewModel(id);
+           
+            return View(vm);
+
+        }
+        private ManageAccountViewModel LoadManageAccountViewModel(int id)
+        {
             var childAccount = _context.ChildAccounts
                 .Include(c => c.Child)
                 .Include(c => c.Transcations).Single(acc => acc.Id == id);
@@ -68,8 +75,8 @@ namespace LomPeng.Controllers
                 Id = childAccount.Id,
                 AccountTotal = childAccount.Transcations.Sum(t => t.Amount),
                 Name = childAccount.Child.DisplayName,
-                NewTransactionAmount = 100,
-                NewTransactionDescription = "Legetøj",
+                NewTransactionAmount = null,
+                NewTransactionDescription = null,
             };
             vm.Transactions = new List<TransactionViewModel>();
             double accountTotal = 0;
@@ -85,18 +92,21 @@ namespace LomPeng.Controllers
                 });
 
             }
-
-            return View(vm);
-
+            return vm;
         }
-
         [HttpPost]
         public IActionResult NewTransaction(ManageAccountViewModel vm, string button)
         {
             if (!_permissionService.UserIsAccountAdmin(User, vm.Id))
                 return RedirectToAction("");
 
-            vm.NewTransactionAmount = Math.Abs(vm.NewTransactionAmount);
+            if (!vm.NewTransactionAmount.HasValue)
+            {
+                vm = LoadManageAccountViewModel(vm.Id);
+                return View("ManageAccount", vm);
+            }
+
+            vm.NewTransactionAmount = Math.Abs(vm.NewTransactionAmount.Value);
             if (button == "Withdraw")
             {
                 vm.NewTransactionAmount = -vm.NewTransactionAmount;
@@ -105,7 +115,7 @@ namespace LomPeng.Controllers
             _context.Entry(fromAccount).State = EntityState.Unchanged;
             var newTransaction = new Transcation()
             {
-                Amount = vm.NewTransactionAmount,
+                Amount = vm.NewTransactionAmount.Value,
                 Description = vm.NewTransactionDescription,
                 FromAccount = fromAccount,
                 TimeStamp = DateTime.Now
